@@ -526,6 +526,10 @@ library.createwindow = function(windowoptions:{})
                 enablefunc(bool)
             end
 
+            funcs.getvalue = function()
+                return enabled
+            end
+
             return funcs
         end
 
@@ -713,6 +717,10 @@ library.createwindow = function(windowoptions:{})
 
             funcs.setpercent = function(num)
                 updatesliderfrompercent(tonumber(num))
+            end
+
+            funcs.getvalue = function()
+                return lastchangedvalue
             end
 
             return funcs

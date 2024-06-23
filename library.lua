@@ -641,7 +641,7 @@ library.createwindow = function(windowoptions:{})
 
                 updatesliderfrompercent(percent)
             end
-            updatesliderfromvalue(default)
+            updatesliderfromvalue(tonumber(default))
             
             local function updatesliderfrommouse()
                 maxright = longbar.AbsolutePosition.X-longbar.AbsoluteSize.X*2.06
@@ -721,7 +721,7 @@ library.createwindow = function(windowoptions:{})
 
     task.spawn(function()
         while screengui.Parent == game.CoreGui do
-            if main.Visible then
+            if frame.Visible then
                 uis.MouseBehavior = Enum.MouseBehavior.Default
             end
             uis.MouseIconEnabled = main.Visible

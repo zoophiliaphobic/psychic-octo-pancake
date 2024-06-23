@@ -733,7 +733,7 @@ library.createwindow = function(windowoptions:{})
             if frame.Visible then
                 us.MouseBehavior = Enum.MouseBehavior.Default
             end
-            us.MouseIconEnabled = main.Visible
+            us.MouseIconEnabled = frame.Visible
             task.wait()
         end
         us.MouseBehavior = Enum.MouseBehavior.LockCenter

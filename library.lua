@@ -719,6 +719,18 @@ library.createwindow = function(windowoptions:{})
     end)
     windowfuncs.setvisible(true)
 
+    task.spawn(function()
+        while screengui.Parent == game.CoreGui do
+            if main.Visible then
+                uis.MouseBehavior = Enum.MouseBehavior.Default
+            end
+            uis.MouseIconEnabled = main.Visible
+            task.wait()
+        end
+        uis.MouseBehavior = Enum.MouseBehavior.LockCenter
+        uis.MouseIconEnabled = false
+    end)
+
     return windowfuncs
 end
 

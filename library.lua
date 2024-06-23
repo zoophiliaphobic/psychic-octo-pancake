@@ -504,7 +504,7 @@ library.createwindow = function(windowoptions:{})
                 enablefunc(not enabled)
 
                 if options.onclick then
-                    task.spawn(options.onclick)
+                    options.onclick(enabled)
                 end
             end)
 

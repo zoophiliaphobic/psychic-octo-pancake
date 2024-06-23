@@ -645,7 +645,7 @@ library.createwindow = function(windowoptions:{})
             end
 
             local function updatesliderfromvalue(value)
-                local percent = ((1-value/options.max)/(options.min/options.max*2))
+                local percent = ((options.max - value)/(options.max-options.min))
                 percent = 1-(math.round(percent*100)/100)
 
                 updatesliderfrompercent(percent)
@@ -743,7 +743,7 @@ library.createwindow = function(windowoptions:{})
     return windowfuncs
 end
 
--- task.delay(5,function()
+-- task.delay(2,function()
 --     screengui:Destroy()
 -- end)
 
@@ -772,6 +772,6 @@ end
 
 -- tab.newslider({onchanged=function(value)
 --     print(value)
--- end, title="slider",textcolor=Color3.fromRGB(155,15,250),min=50,max=150,increment=1,default=50})
+-- end, title="slider",textcolor=Color3.fromRGB(155,15,250),min=3,max=17,increment=1,default=4})
 
 return library

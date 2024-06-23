@@ -302,6 +302,15 @@ library.createwindow = function(windowoptions:{})
 
         newtab.MouseButton1Down:Connect(function()
             windowfuncs.opentab(tabtitle)
+            if not taboptions.nosfx then
+                playsound("rbxassetid://135886551",0.8,1,0.2)
+            end
+        end)
+
+        newtab.MouseEnter:Connect(function()
+            if not taboptions.nosfx then
+                playsound("rbxassetid://7249904928",0.3,1,0.2)
+            end
         end)
 
         local tabfuncs = {}
@@ -722,13 +731,13 @@ library.createwindow = function(windowoptions:{})
     task.spawn(function()
         while screengui.Parent == game.CoreGui do
             if frame.Visible then
-                uis.MouseBehavior = Enum.MouseBehavior.Default
+                us.MouseBehavior = Enum.MouseBehavior.Default
             end
-            uis.MouseIconEnabled = main.Visible
+            us.MouseIconEnabled = main.Visible
             task.wait()
         end
-        uis.MouseBehavior = Enum.MouseBehavior.LockCenter
-        uis.MouseIconEnabled = false
+        us.MouseBehavior = Enum.MouseBehavior.LockCenter
+        us.MouseIconEnabled = false
     end)
 
     return windowfuncs

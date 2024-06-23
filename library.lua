@@ -186,6 +186,10 @@ library.createwindow = function(windowoptions:{})
                 frame.Visible = false
             end
         end
+
+        if windowfuncs.visibilitychanged then
+            windowfuncs.visibilitychanged(bool)
+        end
     end
 
     windowfuncs.changetitle = function(text)

@@ -716,6 +716,16 @@ library.createwindow = function(windowoptions:{})
                 label.Text = tostring(text)
             end
 
+            funcs.setmax = function(num)
+                options.max = tonumber(num)
+                updatesliderfromvalue(tonumber(lastchangedvalue))
+            end
+
+            funcs.setmin = function(num)
+                options.min = tonumber(num)
+                updatesliderfromvalue(tonumber(lastchangedvalue))
+            end
+            
             funcs.setvalue = function(num)
                 updatesliderfromvalue(tonumber(num))
             end

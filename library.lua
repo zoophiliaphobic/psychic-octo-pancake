@@ -634,10 +634,14 @@ library.createwindow = function(windowoptions:{})
             local holdingdown = false
             local maxright = longbar.AbsolutePosition.X-longbar.AbsoluteSize.X*2.06
 
-            local function updatesliderfrompercent(percent)
+            local function updatesliderfrompercent(percent,setvalue)
                 local invp = 1-percent
                 local value = invp*options.min+(1-invp)*options.max
                 value = math.round((value)/options.increment)*options.increment
+
+                if setvalue then
+                    value = setvalue
+                end
                 
                 local snapp = math.round((percent*options.max)/options.increment)*options.increment
                 glider.Position = UDim2.new(math.clamp(snapp/options.max,0,1),0,0.5,0)
@@ -657,7 +661,7 @@ library.createwindow = function(windowoptions:{})
                 local percent = ((options.max - value)/(options.max-options.min))
                 percent = 1-(math.round(percent*100)/100)
 
-                updatesliderfrompercent(percent)
+                updatesliderfrompercent(percent,value)
             end
             updatesliderfromvalue(tonumber(default))
             

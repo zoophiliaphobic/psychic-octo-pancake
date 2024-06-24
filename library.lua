@@ -102,6 +102,10 @@ library.createwindow = function(windowoptions:{})
     close.Font = Enum.Font.FredokaOne
     close.TextColor3 = Color3.new(0,0,0)
 
+    close.MouseButton1Click:Connect(function()
+        screengui:Destroy()    
+    end)
+
     local expand = Instance.new("ImageButton",topbar)
     expand.BorderSizePixel = 0
     expand.AnchorPoint = Vector2.new(1,0)
@@ -119,7 +123,7 @@ library.createwindow = function(windowoptions:{})
     minimize.Size = UDim2.new(0,33,0,33)
     minimize.Image = "rbxassetid://15396333997"
     minimize.ImageColor3 = Color3.new(0,0,0)
-
+    
     local darkmode = Instance.new("ImageButton",topbar)
     darkmode.BorderSizePixel = 0
     darkmode.AnchorPoint = Vector2.new(1,0)
@@ -292,6 +296,7 @@ library.createwindow = function(windowoptions:{})
         tabcontentslistlayout.FillDirection = "Vertical"
         tabcontentslistlayout.HorizontalAlignment = "Center"
         tabcontentslistlayout.Padding = UDim.new(0,4,0)
+        tabcontentslistlayout.SortOrder = "LayoutOrder"
 
         tabstable[tabtitle] = {contents=tabcontents,frame=newtab}
         
@@ -736,6 +741,10 @@ library.createwindow = function(windowoptions:{})
     end)
     windowfuncs.setvisible(true)
 
+    minimize.MouseButton1Click:Connect(function()
+        windowfuncs.setvisible(false)  
+    end)
+    
     task.spawn(function()
         while screengui.Parent == game.CoreGui do
             if frame.Visible then

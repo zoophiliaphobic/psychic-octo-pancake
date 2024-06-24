@@ -380,7 +380,7 @@ library.createwindow = function(windowoptions:{})
                 end
             end)
 
-            base.MouseButton1Up:Connect(function()
+            base.MouseButton1Click:Connect(function()
                 base.BackgroundColor3 = hovercolor
 
                 if options.onclick then
@@ -504,7 +504,7 @@ library.createwindow = function(windowoptions:{})
                 end
             end
 
-            base.MouseButton1Up:Connect(function()
+            base.MouseButton1Click:Connect(function()
                 base.BackgroundColor3 = hovercolor
                 enablefunc(not enabled)
 

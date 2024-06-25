@@ -541,7 +541,6 @@ library.createwindow = function(windowoptions:{})
         tabfuncs.newslider = function(options:{})
             local bgcolor = options.color or Color3.fromRGB(180,180,180)
             local default = options.default or 1
-            local increment = options.increment or 0.1
             local lastchangedvalue = default
             local base = Instance.new("TextButton",contentscroller)
             base.BorderSizePixel = 0
@@ -638,15 +637,15 @@ library.createwindow = function(windowoptions:{})
             local function updatesliderfrompercent(percent,setvalue)
                 local invp = 1-percent
                 local value = invp*options.min+(1-invp)*options.max
-                value = math.round((value)/increment)*increment
+                value = math.round((value)/options.increment)*options.increment
 
                 if setvalue then
                     value = setvalue
                 end
                 
-                local snapp = math.round((percent*options.max)/increment)*increment
-                glider.Position = UDim2.new(math.clamp(math.abs(snapp/options.max),0,1),0,0.5,0)
-                textbox.Text = tostring(math.floor(value/increment)*increment
+                local snapp = math.round((percent*options.max)/options.increment)*options.increment
+                glider.Position = UDim2.new(math.clamp(snapp/options.max,0,1),0,0.5,0)
+                textbox.Text = tostring(math.floor(value*(1/options.increment))/(1/options.increment))
 
                 if not options.nosfx and lastchangedvalue ~= value then
                     playsound("rbxassetid://135886551",0.5,percent+0.3,0)
@@ -659,8 +658,8 @@ library.createwindow = function(windowoptions:{})
             end
 
             local function updatesliderfromvalue(value)
-                local percent = ((options.max-value)/(options.max-options.min))
-                percent = 1-(math.round(percent*10000)/10000)
+                local percent = ((options.max - value)/(options.max-options.min))
+                percent = 1-(math.round(percent*100)/100)
 
                 updatesliderfrompercent(percent,value)
             end

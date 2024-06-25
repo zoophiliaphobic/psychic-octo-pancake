@@ -639,7 +639,7 @@ library.createwindow = function(windowoptions:{})
             local function updatesliderfrompercent(percent,setvalue)
                 local invp = 1-percent
                 local value = invp*options.min+(1-invp)*options.max
-                value = math.round((value)/rounding)*rounding
+                value = math.round((value)/increment)*increment
 
                 if setvalue then
                     value = setvalue
@@ -647,7 +647,7 @@ library.createwindow = function(windowoptions:{})
                 
                 local snapp = math.round((percent*options.max)/increment)*increment
                 glider.Position = UDim2.new(math.clamp(snapp/options.max,0,1),0,0.5,0)
-                textbox.Text = tostring(math.floor(value*(1/increment))/(1/increment))
+                textbox.Text = tostring(math.floor(value*rounding)/rounding
 
                 if not options.nosfx and lastchangedvalue ~= value then
                     playsound("rbxassetid://135886551",0.5,percent+0.3,0)

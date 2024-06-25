@@ -542,7 +542,6 @@ library.createwindow = function(windowoptions:{})
             local bgcolor = options.color or Color3.fromRGB(180,180,180)
             local default = options.default or 1
             local increment = options.increment or 0.1
-            local rounding = options.rounding or 100
             local lastchangedvalue = default
             local base = Instance.new("TextButton",contentscroller)
             base.BorderSizePixel = 0
@@ -646,8 +645,8 @@ library.createwindow = function(windowoptions:{})
                 end
                 
                 local snapp = math.round((percent*options.max)/increment)*increment
-                glider.Position = UDim2.new(math.clamp(snapp/options.max,0,1),0,0.5,0)
-                textbox.Text = tostring(math.floor(value*rounding)/rounding
+                glider.Position = UDim2.new(math.clamp(math.abs(snapp/options.max),0,1),0,0.5,0)
+                textbox.Text = tostring(math.floor(value/increment)*increment
 
                 if not options.nosfx and lastchangedvalue ~= value then
                     playsound("rbxassetid://135886551",0.5,percent+0.3,0)
@@ -660,8 +659,8 @@ library.createwindow = function(windowoptions:{})
             end
 
             local function updatesliderfromvalue(value)
-                local percent = ((options.max - value)/(options.max-options.min))
-                percent = 1-(math.round(percent*100)/100)
+                local percent = ((options.max-value)/(options.max-options.min))
+                percent = 1-(math.round(percent*10000)/10000)
 
                 updatesliderfrompercent(percent,value)
             end

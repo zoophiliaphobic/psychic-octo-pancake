@@ -744,6 +744,102 @@ library.createwindow = function(windowoptions:{})
             return funcs
         end
 
+        tabfuncs.newtextbox = function(options:{})
+            local bgcolor = options.color or Color3.fromRGB(180,180,180)
+            local default = options.default or ""
+            local clearonfocus = options.clearonfocus or true
+            local maxcharacters = options.maxcharacters or math.huge
+            local base = Instance.new("Frame",contentscroller)
+            base.BorderSizePixel = 0
+            base.AnchorPoint = Vector2.new(0.5,0)
+            base.Position = UDim2.new(0.5,0,0,5)
+            base.BackgroundTransparency = 0
+            base.BackgroundColor3 = bgcolor
+            base.Size = UDim2.new(0.95,0,0,30)
+            givecorners(base,UDim.new(0,8))
+
+            local label = Instance.new("TextLabel",base)
+            label.BorderSizePixel = 0
+            label.AnchorPoint = Vector2.new(0.5,0.5)
+            label.Position = UDim2.new(0.2625,0,0.5,0)
+            label.BackgroundTransparency = 0
+            label.Size = UDim2.new(0.475,0,1,0)
+            label.TextXAlignment = options.alignment or "Left"
+            label.TextScaled = true
+            label.Text = tostring(options.title)
+            label.TextColor3 = options.textcolor or Color3.new(0,0,0)
+            label.Font = Enum.Font.Cartoon
+
+            local textbox = Instance.new("TextBox",base)
+            textbox.BorderSizePixel = 0
+            textbox.AnchorPoint = Vector2.new(0,0.5)
+            textbox.Position = UDim2.new(0.525,0,0.5,0)
+            textbox.BackgroundColor3 = Color3.fromRGB(0,0,0)
+            textbox.BackgroundTransparency = 0.85
+            textbox.Size = UDim2.new(0.45,0,0.7,0)
+            textbox.TextXAlignment = "Center"
+            textbox.TextScaled = true
+            textbox.Text = tostring(default)
+            textbox.TextColor3 = Color3.new(0,0,0)
+            textbox.Font = Enum.Font.Cartoon
+            textbox.ClearTextOnFocus = clearonfocus
+            givecorners(textbox,UDim.new(0,4))
+            givestroke(textbox,Color3.new(0,0,0),2,"Round","Border")
+            
+            base.MouseEnter:Connect(function()
+                if not options.nosfx then
+                    playsound("rbxassetid://7249904928",0.3,1,0.2)
+                end
+            end)
+
+            textbox.Focused:Connect(function()
+                if not options.nosfx then
+                    playsound("rbxassetid://135886551",0.8,1,0.2)
+                end
+            end)
+
+            textbox:GetPropertyChangedSignal("Text"):Connect(function()
+                local text = textbox.Text
+                local length = string.len(text)
+
+                if maxcharacters < math.huge then
+                    textbox.Text = string.sub(text,0,maxcharacters)
+                end
+
+                if not options.nosfx and length > 0 then
+                    playsound("rbxassetid://135886551",0.8,math.clamp(0.5+(length/100),0,4),0)
+                end
+
+                if options.onchanged then
+                    options.onchanged(textbox.Text)
+                end
+            end)
+
+            local funcs = {}
+
+            funcs.getcomponents = function()
+                return {base,label,textbox}
+            end
+
+            funcs.arrange = function(num)
+                base.LayoutOrder = tonumber(num)
+            end
+
+            funcs.changetitle = function(text)
+                label.Text = tostring(text)
+            end
+
+            funcs.getvalue = function()
+                return textbox.Text
+            end
+
+            funcs.setvalue = function(txt)
+                textbox.Text = tostring(txt)
+            end
+
+            return funcs
+        end
+
         return tabfuncs
     end
 
@@ -811,5 +907,22 @@ end
 -- tab.newslider({onchanged=function(value)
 --     print(value)
 -- end, title="negative slider",textcolor=Color3.fromRGB(155,15,250),min=-25,max=-5,increment=5,default=-5})
+
+-- tab.newtextbox({
+--     title="textbox test",
+--     onchanged=function(text)
+--     print(text)
+--     end
+--     })
+
+-- tab.newtextbox({
+--     title="dont clear test",
+--     clearonfocus = false,
+--     })
+
+-- tab.newtextbox({
+--     title="20 max characters test",
+--     maxcharacters=20,
+--     })
  
 return library

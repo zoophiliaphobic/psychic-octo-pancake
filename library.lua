@@ -541,7 +541,11 @@ library.createwindow = function(windowoptions:{})
         tabfuncs.newslider = function(options:{})
             local bgcolor = options.color or Color3.fromRGB(180,180,180)
             local default = options.default or 1
+            local increment = options.increment or 1
+            local min = options.min or 0
+            local max = options.max or 1
             local lastchangedvalue = default
+
             local base = Instance.new("TextButton",contentscroller)
             base.BorderSizePixel = 0
             base.AnchorPoint = Vector2.new(0.5,0)
@@ -631,21 +635,13 @@ library.createwindow = function(windowoptions:{})
             givecorners(glider,UDim.new(0,4))
             givestroke(glider,Color3.new(0,0,0),2,"Round","Border")
 
-            local holdingdown = false
-            local maxright = longbar.AbsolutePosition.X-longbar.AbsoluteSize.X*2.06
-
-            local function updatesliderfrompercent(percent,setvalue)
-                local invp = 1-percent
-                local value = invp*options.min+(1-invp)*options.max
-                value = math.round((value)/options.increment)*options.increment
-
-                if setvalue then
-                    value = setvalue
-                end
+            local function updatesliderfromvalue(value)
+                local bracket = 1/increment
+                local snapped = math.round(value*bracket)/bracket
+                local percent = 1-((max-snapped)/(max-min))
                 
-                local snapp = math.round((percent*options.max)/options.increment)*options.increment
-                glider.Position = UDim2.new(math.clamp(snapp/options.max,0,1),0,0.5,0)
-                textbox.Text = tostring(math.floor(value*(1/options.increment))/(1/options.increment))
+                glider.Position = UDim2.new(math.clamp(percent,0,1),0,0.5,0)
+                textbox.Text = tostring(snapped)
 
                 if not options.nosfx and lastchangedvalue ~= value then
                     playsound("rbxassetid://135886551",0.5,percent+0.3,0)
@@ -657,24 +653,24 @@ library.createwindow = function(windowoptions:{})
                 end
             end
 
-            local function updatesliderfromvalue(value)
-                local percent = ((options.max - value)/(options.max-options.min))
-                percent = 1-(math.round(percent*100)/100)
-
-                updatesliderfrompercent(percent,value)
+            local function updatesliderfrompercent(percent)
+                local bracket = 1/increment
+                local value = math.round((min+(max-min)*percent)*bracket)/bracket
+                updatesliderfromvalue(value)
             end
-            updatesliderfromvalue(tonumber(default))
             
             local function updatesliderfrommouse()
-                maxright = longbar.AbsolutePosition.X-longbar.AbsoluteSize.X*2.06
+                local maxright = longbar.AbsolutePosition.X-longbar.AbsoluteSize.X*2.06
                 local leftsub = math.clamp(mouse.X-longbar.AbsolutePosition.X,0,maxright)
-                updatesliderfrompercent(math.clamp(leftsub/maxright,0,1))
+                local percent = math.clamp(leftsub/maxright,0,1)
+                updatesliderfrompercent(percent)
             end
 
             textbox.FocusLost:Connect(function()
                 updatesliderfromvalue(tonumber(textbox.Text) or lastchangedvalue)
             end)
 
+            local holdingdown = false
             local inputendcon
             local mousemovecon
             base.MouseButton1Down:Connect(function()
@@ -722,11 +718,13 @@ library.createwindow = function(windowoptions:{})
 
             funcs.setmax = function(num)
                 options.max = tonumber(num)
+                max = options.max
                 updatesliderfromvalue(tonumber(lastchangedvalue))
             end
 
             funcs.setmin = function(num)
                 options.min = tonumber(num)
+                min = options.min
                 updatesliderfromvalue(tonumber(lastchangedvalue))
             end
             
@@ -742,6 +740,7 @@ library.createwindow = function(windowoptions:{})
                 return lastchangedvalue
             end
 
+            updatesliderfromvalue(tonumber(default))
             return funcs
         end
 
@@ -774,7 +773,7 @@ library.createwindow = function(windowoptions:{})
     return windowfuncs
 end
 
--- task.delay(2,function()
+-- task.delay(10,function()
 --     screengui:Destroy()
 -- end)
 
@@ -805,4 +804,12 @@ end
 --     print(value)
 -- end, title="slider",textcolor=Color3.fromRGB(155,15,250),min=3,max=17,increment=1,default=4})
 
+-- tab.newslider({onchanged=function(value)
+--     print(value)
+-- end, title="big slider",textcolor=Color3.fromRGB(155,15,250),min=0,max=100,increment=0.1,default=0})
+
+-- tab.newslider({onchanged=function(value)
+--     print(value)
+-- end, title="negative slider",textcolor=Color3.fromRGB(155,15,250),min=-25,max=-5,increment=5,default=-5})
+ 
 return library

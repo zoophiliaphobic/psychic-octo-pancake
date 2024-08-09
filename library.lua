@@ -544,6 +544,7 @@ library.createwindow = function(windowoptions:{})
             local increment = options.increment or 1
             local min = options.min or 0
             local max = options.max or 1
+            local usetextslider = options.textmode
             local lastchangedvalue = default
 
             local base = Instance.new("TextButton",contentscroller)
@@ -641,7 +642,13 @@ library.createwindow = function(windowoptions:{})
                 local percent = 1-((max-snapped)/(max-min))
                 
                 glider.Position = UDim2.new(math.clamp(percent,0,1),0,0.5,0)
-                textbox.Text = tostring(snapped)
+
+                if usetextslider then
+                    textbox.Text = usetextslider[snapped] or tostring(snapped)
+                else
+                    textbox.Text = tostring(snapped)
+                end
+                
 
                 if not options.nosfx and lastchangedvalue ~= value then
                     playsound("rbxassetid://135886551",0.5,percent+0.3,0)

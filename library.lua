@@ -72,9 +72,17 @@ library.createwindow = function(windowoptions:{})
     topbar.BackgroundTransparency = 1
     topbar.Size = UDim2.new(1,0,0,38)
 
-    local dragger = Instance.new("UIDragDetector",topbar)
-    dragger.ReferenceUIInstance = frame
-    dragger.DragSpace = Eum.UIDragDetectorDragSpace.Reference
+    local dragblocker = Instance.new("TextButton",frame)
+    dragblocker.BorderSizePixel = 0
+    dragblocker.AnchorPoint = Vector2.new(0,1)
+    dragblocker.Position = UDim2.new(0,0,1,0)
+    dragblocker.BackgroundTransparency = 0
+    dragblocker.Size = UDim2.new(1,0,1,-38)
+    dragblocker.Text = ""
+    dragblocker.ZIndex = 1
+
+    local dragger = Instance.new("UIDragDetector",frame)
+    dragger.BoundingUI = screengui
     dragger.DragStyle = Enum.UIDragDetectorDragStyle.TranslatePlane
 
     local blackline = Instance.new("Frame",topbar)
@@ -652,7 +660,6 @@ library.createwindow = function(windowoptions:{})
                 else
                     textbox.Text = tostring(snapped)
                 end
-                
 
                 if not options.nosfx and lastchangedvalue ~= value then
                     playsound("rbxassetid://135886551",0.5,percent+0.3,0)
@@ -671,9 +678,12 @@ library.createwindow = function(windowoptions:{})
             end
             
             local function updatesliderfrommouse()
-                local maxright = longbar.AbsolutePosition.X-longbar.AbsoluteSize.X*2.06
-                local leftsub = math.clamp(mouse.X-longbar.AbsolutePosition.X,0,maxright)
-                local percent = math.clamp(leftsub/maxright,0,1)
+                local mousepos = us:GetMouseLocation()
+                local percent = math.clamp((mousepos.X-longbar.AbsolutePosition.X)/(longbar.AbsoluteSize.X),0,1)
+
+                -- local maxright = longbar.AbsolutePosition.X-longbar.AbsoluteSize.X*2.06
+                -- local leftsub = math.clamp(mouse.X-longbar.AbsolutePosition.X,0,maxright)
+                -- local percent = math.clamp(leftsub/maxright,0,1)
                 updatesliderfrompercent(percent)
             end
 
@@ -875,8 +885,7 @@ library.createwindow = function(windowoptions:{})
                 us.MouseBehavior = Enum.MouseBehavior.Default
                 us.MouseIconEnabled = true
             else
-                us.MouseBehavior = oldbehavior
-                us.MouseIconEnabled = oldmouseicon
+                --us.MouseIconEnabled = oldmouseicon
             end
             task.wait()
         end

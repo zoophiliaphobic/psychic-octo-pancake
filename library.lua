@@ -26,11 +26,11 @@ function playsound(id,volume,pitch,pitchrandoffset)
     ss.SoundId = id
     ss.PlaybackSpeed = pitch+Random.new():NextNumber(-pitchrandoffset,pitchrandoffset)
     ss.Parent = screengui
-    ss:Play()
 
     ss.Ended:Once(function()
         ss:Destroy()
     end)
+    ss:Play()
 end
 
 function givecorners(what,radius)
@@ -72,6 +72,9 @@ library.createwindow = function(windowoptions:{})
     topbar.BackgroundTransparency = 1
     topbar.Size = UDim2.new(1,0,0,38)
 
+    local dragger = Instance.new("UIDragDetector",topbar)
+    dragger.DragStyle = Enum.UIDragDetectorDragStyle.TranslatePlane
+
     local blackline = Instance.new("Frame",topbar)
     blackline.BorderSizePixel = 0
     blackline.AnchorPoint = Vector2.new(0,1)
@@ -101,10 +104,6 @@ library.createwindow = function(windowoptions:{})
     close.Text = "X"
     close.Font = Enum.Font.FredokaOne
     close.TextColor3 = Color3.new(0,0,0)
-
-    close.MouseButton1Click:Connect(function()
-        screengui:Destroy()    
-    end)
 
     local expand = Instance.new("ImageButton",topbar)
     expand.BorderSizePixel = 0
@@ -175,6 +174,9 @@ library.createwindow = function(windowoptions:{})
 
     local windowtween_grow = ts:Create(frame,TweenInfo.new(0.5,Enum.EasingStyle.Back,Enum.EasingDirection.Out),{Size=windowsize})
     local windowtween_shrink = ts:Create(frame,TweenInfo.new(0.1,Enum.EasingStyle.Quad,Enum.EasingDirection.In),{Size=UDim2.new(windowsize.X.Scale,0,0.1,0)})
+
+    local oldbehavior = us.MouseBehavior
+    local oldmouseicon = us.MouseIconEnabled
 
     windowfuncs.setvisible = function(bool)
         if bool then
@@ -857,6 +859,10 @@ library.createwindow = function(windowoptions:{})
     end)
     windowfuncs.setvisible(true)
 
+    close.MouseButton1Click:Connect(function()
+        windowfuncs.setvisible(false)  
+    end)
+
     minimize.MouseButton1Click:Connect(function()
         windowfuncs.setvisible(false)  
     end)
@@ -865,12 +871,15 @@ library.createwindow = function(windowoptions:{})
         while screengui.Parent == game.CoreGui do
             if frame.Visible then
                 us.MouseBehavior = Enum.MouseBehavior.Default
+                us.MouseIconEnabled = true
+            else
+                us.MouseBehavior = oldbehavior
+                us.MouseIconEnabled = oldmouseicon
             end
-            us.MouseIconEnabled = frame.Visible
             task.wait()
         end
-        us.MouseBehavior = Enum.MouseBehavior.LockCenter
-        us.MouseIconEnabled = false
+        us.MouseBehavior = oldbehavior
+        us.MouseIconEnabled = oldmouseicon
     end)
 
     return windowfuncs

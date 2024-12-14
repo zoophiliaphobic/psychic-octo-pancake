@@ -73,6 +73,8 @@ library.createwindow = function(windowoptions:{})
     topbar.Size = UDim2.new(1,0,0,38)
 
     local dragger = Instance.new("UIDragDetector",topbar)
+    dragger.ReferenceUIInstance = frame
+    dragger.DragSpace = Eum.UIDragDetectorDragSpace.Reference
     dragger.DragStyle = Enum.UIDragDetectorDragStyle.TranslatePlane
 
     local blackline = Instance.new("Frame",topbar)

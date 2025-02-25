@@ -54,6 +54,7 @@ library.createwindow = function(windowoptions:{})
     local windowtitle = windowoptions.title
     local keybind = windowoptions.keybind or Enum.KeyCode.Backquote
     local windowsize = windowoptions.size or UDim2.new(0.6,0,0.64,0)
+    local mousesettings = windowoptions.defaults
     
     local frame = Instance.new("Frame",screengui)
     frame.BorderSizePixel = 0
@@ -142,6 +143,51 @@ library.createwindow = function(windowoptions:{})
     darkmode.Image = "rbxassetid://8498174594"
     darkmode.ImageColor3 = Color3.new(0,0,0)
 
+    local function setdarkmode(darkmoded)
+        local function setinvert(what,property)
+            local ogname = "original".. property
+            local og = what:GetAttribute(ogname)
+
+            local col = what[property]
+            local h,s,v = col:ToHSV()
+
+            if s <= 0.1 then
+                if darkmoded then
+                    if not og then
+                        what:SetAttribute(ogname,what[property])
+                    end
+                    what[property] = Color3.fromHSV(h,s,1-v)
+                else
+                    what[property] = og
+                end
+            end
+        end
+        
+        for _,v in pairs(frame:GetDescendants()) do
+            if v:IsA("GuiObject") then
+                setinvert(v,"BackgroundColor3")
+            end
+
+            if v:IsA("TextLabel") or v:IsA("TextBox") or v:IsA("TextButton") then
+                setinvert(v,"TextColor3")
+            end
+
+            if v:IsA("ImageLabel") or v:IsA("ImageButton") then
+                setinvert(v,"ImageColor3")
+            end
+
+            if v:IsA("UIStroke") then
+                setinvert(v,"Color")
+            end
+        end
+    end
+
+    local darkmodeactive = false
+    darkmode.MouseButton1Click:Connect(function()
+        darkmodeactive = not darkmodeactive
+        setdarkmode(darkmodeactive)
+    end)
+
     local container = Instance.new("Frame",frame)
     container.BorderSizePixel = 0
     container.AnchorPoint = Vector2.new(0,1)
@@ -185,8 +231,8 @@ library.createwindow = function(windowoptions:{})
     local windowtween_grow = ts:Create(frame,TweenInfo.new(0.5,Enum.EasingStyle.Back,Enum.EasingDirection.Out),{Size=windowsize})
     local windowtween_shrink = ts:Create(frame,TweenInfo.new(0.1,Enum.EasingStyle.Quad,Enum.EasingDirection.In),{Size=UDim2.new(windowsize.X.Scale,0,0.1,0)})
 
-    local oldbehavior = us.MouseBehavior
-    local oldmouseicon = us.MouseIconEnabled
+    local oldbehavior = mousesettings.MouseBehavior or us.MouseBehavior
+    local oldmouseicon = mousesettings.MouseIconEnabled or us.MouseIconEnabled
 
     windowfuncs.setvisible = function(bool)
         if bool then
@@ -895,10 +941,6 @@ library.createwindow = function(windowoptions:{})
 
     return windowfuncs
 end
-
--- task.delay(10,function()
---     screengui:Destroy()
--- end)
 
 -- local window = library.createwindow({title="welcome!"})
 -- local tab = window.createtab({title="hacks"})

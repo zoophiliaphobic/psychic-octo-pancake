@@ -231,18 +231,36 @@ library.createwindow = function(windowoptions:{})
     local windowtween_grow = ts:Create(frame,TweenInfo.new(0.5,Enum.EasingStyle.Back,Enum.EasingDirection.Out),{Size=windowsize})
     local windowtween_shrink = ts:Create(frame,TweenInfo.new(0.1,Enum.EasingStyle.Quad,Enum.EasingDirection.In),{Size=UDim2.new(windowsize.X.Scale,0,0.1,0)})
 
-    local oldbehavior = mousesettings.MouseBehavior or us.MouseBehavior
-    local oldmouseicon = mousesettings.MouseIconEnabled or us.MouseIconEnabled
+    local windowisvisible = false
+    local oldbehavior = mousesettings.MouseBehavior
+    local oldmouseicon = mousesettings.MouseIconEnabled
+
+    if typeof(oldmouseicon) ~= "boolean" then
+        oldmouseicon = us.MouseIconEnabled
+    end
 
     windowfuncs.setvisible = function(bool)
+        windowisvisible = bool
         if bool then
             frame.Size = UDim2.new(0,0,0,0)
             playsound(randomopensounds[math.random(1,#randomopensounds)],0.5,1.1,0.1)
             windowtween_grow:Play()
             frame.Visible = true
+
+            task.spawn(function()
+                while windowisvisible do
+                    us.MouseBehavior = Enum.MouseBehavior.Default
+                    us.MouseIconEnabled = true
+
+                    task.wait()
+                end
+            end)
         else
+            us.MouseBehavior = oldbehavior
+            us.MouseIconEnabled = oldmouseicon
             windowtween_shrink:Play()
             windowtween_shrink.Completed:Wait()
+            print(us.MouseIconEnabled,oldmouseicon)
             
             if windowtween_grow.PlaybackState ~= Enum.PlaybackState.Playing then
                 frame.Visible = false
@@ -924,25 +942,11 @@ library.createwindow = function(windowoptions:{})
     minimize.MouseButton1Click:Connect(function()
         windowfuncs.setvisible(false)  
     end)
-    
-    task.spawn(function()
-        while screengui.Parent == game.CoreGui do
-            if frame.Visible then
-                us.MouseBehavior = Enum.MouseBehavior.Default
-                us.MouseIconEnabled = true
-            else
-                --us.MouseIconEnabled = oldmouseicon
-            end
-            task.wait()
-        end
-        us.MouseBehavior = oldbehavior
-        us.MouseIconEnabled = oldmouseicon
-    end)
 
     return windowfuncs
 end
 
--- local window = library.createwindow({title="welcome!"})
+-- local window = library.createwindow({title="welcome!",defaults={MouseIconEnabled=false,MouseBehavior=Enum.MouseBehavior.LockCenter}})
 -- local tab = window.createtab({title="hacks"})
 -- local tab2 = window.createtab({title="miscellaneous"})
 -- tab.newlabel({title="default"})

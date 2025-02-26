@@ -54,7 +54,7 @@ library.createwindow = function(windowoptions:{})
     local windowtitle = windowoptions.title
     local keybind = windowoptions.keybind or Enum.KeyCode.Backquote
     local windowsize = windowoptions.size or UDim2.new(0.6,0,0.64,0)
-    local mousesettings = windowoptions.defaults
+    local mousesettings = windowoptions.defaults or {}
     
     local frame = Instance.new("Frame",screengui)
     frame.BorderSizePixel = 0

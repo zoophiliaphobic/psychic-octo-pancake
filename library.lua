@@ -505,6 +505,8 @@ library.createwindow = function(windowoptions:{})
             funcs.setcolor = function(newclr)
                 bgcolor = newclr
                 hovercolor = options.hovercolor or Color3.fromRGB(math.clamp(bgcolor.R*255-25,0,255),math.clamp(bgcolor.G*255-25,0,255),math.clamp(bgcolor.B*255-25,0,255))
+
+                base.BackgroundColor3 = bgcolor
             end
 
             return funcs
